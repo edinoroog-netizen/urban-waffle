@@ -1,0 +1,55 @@
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
+
+public class DoorToNextLevel : MonoBehaviour
+{
+    [Header("Scene")]
+    public string nextSceneName = "Playground";
+
+    [Header("UI")]
+    public GameObject interactionUI; // текст "E - выйти"
+
+    private bool playerInside = false;
+
+    void Start()
+    {
+        if (interactionUI != null)
+            interactionUI.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (!playerInside) return;
+
+        if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            LoadNextScene();
+        }
+    }
+
+    void LoadNextScene()
+    {
+        SceneManager.LoadScene(nextSceneName);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag("Player")) return;
+
+        playerInside = true;
+
+        if (interactionUI != null)
+            interactionUI.SetActive(true);
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (!other.CompareTag("Player")) return;
+
+        playerInside = false;
+
+        if (interactionUI != null)
+            interactionUI.SetActive(false);
+    }
+}
